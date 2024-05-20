@@ -164,6 +164,7 @@ void handle_add_room(int argc, char* argv[]) {
         rtfm(argv);
         exit(EXIT_FAILURE);
     }
+
 }
 //////////////////////
 /*
@@ -202,6 +203,9 @@ void handle_list_rooms(int argc, char* argv[]) {
     roomman_id_t rid;
     roomman_result_t results = roomman_directory(&fdptr, building, NULL, &rid);
 
+
+    lseek(fdptr, 0, SEEK_SET) == -1;
+    
     if (results == ROOMMAN_SUCCESS) {
         printf("Rooms in building %s:\n", building);
         printf("--------------------\n");
@@ -286,7 +290,7 @@ void handle_update_occupancy(int argc, char* argv[]) {
     char* roomno = argv[3];
     uint16_t persons = (argc == 5) ? atoi(argv[4]) : 0;
 
-    // Deðiþkenler
+    // Deï¿½iï¿½kenler
     char building_name[50];
     char room_name[50];
     uint16_t occupied;
@@ -300,14 +304,14 @@ void handle_update_occupancy(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // Oda giriþini oku
+    // Oda giriï¿½ini oku
     roomman_result_t read_result = roomman_readentry(rid, building_name, room_name, &occupied, &capacity, reserved_by);
     if (read_result != ROOMMAN_SUCCESS) {
         printf("Error: Failed to read room entry\n");
         exit(EXIT_FAILURE);
     }
 
-    // Yeni kiþi sayýsýný belirle
+    // Yeni kiï¿½i sayï¿½sï¿½nï¿½ belirle
     uint16_t new_occupied;
     if (persons > occupied) {
         new_occupied = occupied + (persons - occupied);
@@ -317,7 +321,7 @@ void handle_update_occupancy(int argc, char* argv[]) {
         new_occupied = occupied;
     }
 
-    // Kiþi sayýsýný güncelle
+    // Kiï¿½i sayï¿½sï¿½nï¿½ gï¿½ncelle
     roomman_result_t update_result = roomman_update_capacity(rid, new_occupied);
     if (update_result == ROOMMAN_SUCCESS) {
         printf("Updated number of persons occupying room %s in Building %s to %d\n", roomno, building, new_occupied);
